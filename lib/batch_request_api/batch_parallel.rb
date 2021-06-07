@@ -18,7 +18,7 @@ module BatchRequestApi
       def process_parallel_request(env, first_request, requests)
         json_body = requests.map { |item| item['body'] }.to_json
         setup_env(env, first_request, json_body)
-        handoff_to_rails(env)
+        handoff_to_rails_parallel(env)
       end
 
       def set_id_on_record_for_patch(requests)
@@ -29,7 +29,7 @@ module BatchRequestApi
         requests
       end
 
-      def handoff_to_rails(env)
+      def handoff_to_rails_parallel(env)
         status, headers, body = @app.call(env)
         body.close if body.respond_to? :close
         { status: status, headers: headers, response: JSON.parse(body.body) }

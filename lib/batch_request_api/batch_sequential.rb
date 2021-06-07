@@ -17,10 +17,10 @@ module BatchRequestApi
       def process_request(env, item)
         json_body = item['body'].to_json
         setup_env(env, item, json_body)
-        handoff_to_rails(env)
+        handoff_to_rails_sequential(env)
       end
 
-      def handoff_to_rails(env)
+      def handoff_to_rails_sequential(env)
         status, headers, body = @app.call(env)
         body.close if body.respond_to? :close
         { status: status, headers: headers, response: JSON.parse(body[0]) }
