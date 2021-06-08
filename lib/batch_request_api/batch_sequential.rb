@@ -9,7 +9,7 @@ module BatchRequestApi
       responses = requests.map do |item|
         process_request(env.deep_dup, item)
       end
-      build_response(response_hash(responses))
+      build_response(responses)
     end
 
     private
@@ -23,7 +23,7 @@ module BatchRequestApi
       def handoff_to_rails_sequential(env)
         status, headers, body = @app.call(env)
         body.close if body.respond_to? :close
-        { status: status, headers: headers, response: JSON.parse(body[0]) }
+        { status: status, headers: headers, response: JSON.parse(body.join) }
       end
 
       def response_hash(responses)
