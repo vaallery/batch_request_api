@@ -23,7 +23,7 @@ module BatchRequestApi
       def handoff_to_rails_sequential(env)
         status, headers, body = @app.call(env)
         body.close if body.respond_to? :close
-        { status: status, headers: headers, response: JSON.parse(body.join) }
+        { status: status, headers: headers, response: JSON.parse(body.try(:join)||body.try(:body)) }
       end
 
       def response_hash(responses)
